@@ -5,6 +5,7 @@ featured_image: "/img/form-decoding-head.jpg"
 tags: ["Form decoding", "Form validation", "Elm"]
 author: "arowM"
 author_href: "https://github.com/arowM/"
+images: ["/posts/img/form-decoding-twitter.jpg"]
 draft: false
 ---
 
