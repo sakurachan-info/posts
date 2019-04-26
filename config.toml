@@ -1,0 +1,9 @@
+baseURL = "https://arow.info/posts"
+languageCode = "en-us"
+title = "ARoW blog"
+theme = "ananke"
+pygmentsUseClasses = true
+pygmentsCodefences = true
+
+[params]
+custom_css = ["css/syntax.css", "css/custom.css"]
