@@ -6,9 +6,37 @@
     <description>Recent content in Tags on ARoW blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Fri, 26 Apr 2019 16:06:39 +0900</lastBuildDate>
     
 	<atom:link href="https://arow.info/posts/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Elm</title>
+      <link>https://arow.info/posts/tags/elm/</link>
+      <pubDate>Fri, 26 Apr 2019 16:06:39 +0900</pubDate>
+      
+      <guid>https://arow.info/posts/tags/elm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Form Decoding</title>
+      <link>https://arow.info/posts/tags/form-decoding/</link>
+      <pubDate>Fri, 26 Apr 2019 16:06:39 +0900</pubDate>
+      
+      <guid>https://arow.info/posts/tags/form-decoding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Form Validation</title>
+      <link>https://arow.info/posts/tags/form-validation/</link>
+      <pubDate>Fri, 26 Apr 2019 16:06:39 +0900</pubDate>
+      
+      <guid>https://arow.info/posts/tags/form-validation/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

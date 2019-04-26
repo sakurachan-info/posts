@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>ARoW blog  | Form Decoding: the next era of the Form Validation</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.40.1" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+    
+
+    
+    
+      <link href="/posts/dist/css/app.955516233bcafa4d2a1c13cea63c7b50.css" rel="stylesheet">
+    
+
+    
+      <link rel="stylesheet" href="/postscss/syntax.css">
+    
+      <link rel="stylesheet" href="/postscss/custom.css">
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Form Decoding: the next era of the Form Validation" />
+<meta property="og:description" content="Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://arow.info/posts/2019/form-decoding/" />
+
+
+
+<meta property="article:published_time" content="2019-04-26T16:06:39&#43;09:00"/>
+
+<meta property="article:modified_time" content="2019-04-26T16:06:39&#43;09:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta itemprop="name" content="Form Decoding: the next era of the Form Validation">
+<meta itemprop="description" content="Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications.">
+
+
+<meta itemprop="datePublished" content="2019-04-26T16:06:39&#43;09:00" />
+<meta itemprop="dateModified" content="2019-04-26T16:06:39&#43;09:00" />
+<meta itemprop="wordCount" content="1737">
+
+
+
+<meta itemprop="keywords" content="Form decoding,Form validation,Elm," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Form Decoding: the next era of the Form Validation"/>
+<meta name="twitter:description" content="Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications."/>
+
+      
+    
+  </head>
+
+  <body class="ma0 avenir bg-near-white production">
+
+    
+   
+  
+
+  
+  
+  <header class="cover bg-top" style="background-image: url('https://arow.info/posts/img/form-decoding-head.jpg');">
+    <div class="pb3-m pb6-l bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://arow.info/posts" class="f3 fw2 hover-white no-underline white-90 dib">
+      ARoW blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">Form Decoding: the next era of the Form Validation</h1>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        2019S
+      </p>
+      <h1 class="f1 athelas mb1">Form Decoding: the next era of the Form Validation</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2019-04-26T16:06:39&#43;09:00">April 26, 2019</time>
+      
+      
+          
+          
+          <div class="author">Author: <a target="_blank" href="https://github.com/arowM/">arowM</a></span>
+      
+      
+
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.</p>
+
+<p>In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named <strong>form decoding</strong>, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using <a href="https://github.com/arowM/elm-form-decoder">elm-form-decoder</a>, which I&rsquo;ve developed to do form decoding in Elm applications.</p>
+
+<h2 id="sample-application">Sample application</h2>
+
+<p>Say that we have an SNS application for goats. Here, do not matter how they can use keyboards by their two-fingered hands.</p>
+
+<p>In this example app, we assume that it only contains two screens:</p>
+
+<ul>
+<li>A form to register a new goat</li>
+<li>A page for viewing all the goats registered</li>
+</ul>
+
+<p>Here I&rsquo;ve prepared <a href="https://arowm.github.io/elm-form-decoder/">a demo app</a>. Please play with it to get practical visualization.</p>
+
+<p><img src="/img/form-decoder-screenshot.png" alt="demo screenshot" /></p>
+
+<h2 id="type-for-managing-data-itself-and-type-for-managing-state-of-form">Type for managing data itself, and type for managing state of form</h2>
+
+<p>In this sample app, we have following data structure as a goat profile.</p>
+
+<ul>
+<li>Name</li>
+<li>Age</li>
+<li>Number of Horns</li>
+<li>Means of Contact
+
+<ul>
+<li>Either of Email or Phone Number</li>
+</ul></li>
+<li>Message to other goats
+
+<ul>
+<li>It&rsquo;s optional</li>
+</ul></li>
+</ul>
+
+<p>You would declare a type for managing this data like this:
+(In this post, all sample codes are written in Elm.)</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Goat</span> <span class="nf">=</span>
+    <span class="p">{</span> <span class="nv">name</span> <span class="nf">:</span> <span class="kt">Name</span>
+    <span class="p">,</span> <span class="nv">age</span> <span class="nf">:</span> <span class="kt">Age</span>
+    <span class="p">,</span> <span class="nv">horns</span> <span class="nf">:</span> <span class="kt">Horns</span>
+    <span class="p">,</span> <span class="nv">contact</span> <span class="nf">:</span> <span class="kt">Contact</span>
+    <span class="p">,</span> <span class="nv">message</span> <span class="nf">:</span> <span class="kt">Maybe</span> <span class="kt">Message</span>
+    <span class="p">}</span></code></pre></div>
+<p>Types <code>Name</code>, <code>Age</code>, <code>Horns</code>, and <code>Message</code> here is declared in another place:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kt">Name</span>
+    <span class="nf">=</span> <span class="kt">Name</span> <span class="kt">String</span>
+
+<span class="kr">type</span> <span class="kt">Age</span>
+    <span class="nf">=</span> <span class="kt">Age</span> <span class="kt">Int</span>
+
+<span class="nf">...</span></code></pre></div>
+<p>It&rsquo;s just an opaque type to assure that the value is valid as name, age, e.t.c.</p>
+
+<p>The <code>Contact</code> type can take two type of values email or phone:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kt">Contact</span>
+    <span class="nf">=</span> <span class="kt">ContactEmail</span> <span class="kt">Email</span>
+    <span class="nf">|</span> <span class="kt">ContactPhone</span> <span class="kt">Phone</span></code></pre></div>
+<p>The reason <code>message</code> has type of <code>Maybe Message</code> is that it is optional value. It can take Nothing (empty input), or something like <code>Just &quot;Hi! I'm Sakura-chan.&quot;</code>. Nice modeling!</p>
+
+<p>So do we use <code>Goat</code> type to hold the state of registration form? No! The <code>Goat</code> type is not suitable for user inputs that is plain text itself. For example, the user would input &ldquo;two&rdquo; in the input field for age, but <code>age</code> field of the <code>Goat</code> is actually the type of <code>Int</code>. It means if we want to show the error text bellow, we have to take the <code>value</code> property of the <code>input</code> tag directly.</p>
+
+<blockquote>
+<p>The input value &ldquo;two&rdquo; is invalid for this field.</p>
+</blockquote>
+
+<p>It&rsquo;s assumed a sort of bad pattern, especially Elm does not allow developers to do such methods to avoid mess codes.</p>
+
+<p>The another example that <code>Goat</code> type cannot handle form state is about the method of contact. Say that the goat first selected &ldquo;Email address&rdquo; as their contact method and input &ldquo;you-goat-a-mail@example.com&rdquo; in email field, but they changed their mind to select &ldquo;Phone number&rdquo;. In this situation, the value of the <code>contact</code> field can be <code>ContactPhone &quot;&quot;</code>, but the input value &ldquo;you-goat-a-mail@example.com&rdquo; is no more here. It means if the goat selected &ldquo;Email address&rdquo; again, they
+have to input email address again!</p>
+
+<p>Therefore, we need another type to represent form state.</p>
+
+<p><img src="/img/form-decoder-middle.jpg" alt="eye catch" /></p>
+
+<h2 id="type-for-hold-form-state">Type for hold form state</h2>
+
+<p>Okay, let&rsquo;s declare another type to hold state of registration form here:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">RegisterForm</span> <span class="nf">=</span>
+    <span class="p">{</span> <span class="nv">name</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">,</span> <span class="nv">age</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">,</span> <span class="nv">horns</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">,</span> <span class="nv">email</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">,</span> <span class="nv">phone</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">,</span> <span class="nv">contactType</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">,</span> <span class="nv">message</span> <span class="nf">:</span> <span class="kt">String</span>
+    <span class="p">}</span></code></pre></div>
+<p>It&rsquo;s simple honesty. No interest things. It just holds user inputs as it is in <code>String</code> fields.</p>
+
+<p>Maybe you think that <code>contactType</code> could be enumeration type:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kt">ContactType</span>
+    <span class="nf">=</span> <span class="kt">UseEmail</span>
+    <span class="nf">|</span> <span class="kt">UsePhone</span></code></pre></div>
+<p>But it cannot handle state of <code>select</code> tag of HTML exactly. The <code>value</code> property of <code>select</code> tag is just a string, so the <code>ContactType</code> cannot handle the possibility that the select tag has unexpected <code>value</code>.</p>
+
+<h2 id="why-form-decoding-is-needed">Why Form decoding is needed?</h2>
+
+<p>You may noticed that we need some function to convert <code>RegisterForm</code> into <code>Goat</code> because we cannot benefit from static types if using <code>RegisterForm</code> as it is even after registering. It would be much better to use dynamic typing if doing so!</p>
+
+<p>In this post, this sort of conversion is called <strong>form decoding</strong>, assuming that user inputs are <strong>encoded</strong> as string.</p>
+
+<h2 id="form-decoding-is-the-next-generation-of-form-validation">Form decoding is the next-generation of form validation</h2>
+
+<p>Bunch of people would think &ldquo;Hey, form decoding is different from form validation, though I&rsquo;ve understood its importance&rdquo;. Yes, you are right. But if considering the posibility of failing decoding, it practically a sort of form validation.</p>
+
+<p>Say that we have following value in Model as <code>RegisterForm</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">RegisterForm</span> <span class="nf">=</span>
+    <span class="p">{</span> <span class="nv">name</span> <span class="nf">=</span> <span class="s">&#34;Hey!&#34;</span>
+    <span class="p">,</span> <span class="nv">age</span> <span class="nf">=</span> <span class="s">&#34;I&#39;m pretty geneous&#34;</span>
+    <span class="p">,</span> <span class="nv">horns</span> <span class="nf">=</span> <span class="s">&#34;to use SNS&#34;</span>
+    <span class="p">,</span> <span class="nv">email</span> <span class="nf">=</span> <span class="s">&#34;&#34;</span>
+    <span class="p">,</span> <span class="nv">phone</span> <span class="nf">=</span> <span class="s">&#34;&#34;</span>
+    <span class="p">,</span> <span class="nv">contactType</span> <span class="nf">=</span> <span class="s">&#34;&#34;</span>
+    <span class="p">,</span> <span class="nv">message</span> <span class="nf">=</span> <span class="s">&#34;WHATS CONTACT TYPE???&#34;</span>
+    <span class="p">}</span></code></pre></div>
+<p>This obviously cannot be successfully converted to <code>Goat</code> type. One of the reason to fail is that it does not have digits in age field. Remember that <code>Age</code> type is actually equivalent to <code>Int</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kt">Age</span>
+    <span class="nf">=</span> <span class="kt">Age</span> <span class="kt">Int</span></code></pre></div>
+<p>Consequently, the convert function is supposed to have type like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="nv">toGoat</span> <span class="nf">:</span> <span class="kt">RegisterForm</span> <span class="nf">-&gt;</span> <span class="kt">Maybe</span> <span class="kt">Goat</span></code></pre></div>
+<p>It returns <code>Nothing</code> if it fails to convert. Or it can be more user friendly to tell why it failed.</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kt">Error</span>
+    <span class="nf">=</span> <span class="kt">NameRequired</span>
+    <span class="nf">|</span> <span class="kt">AgeInvalidInt</span>
+    <span class="nf">|</span> <span class="kt">AgeNegative</span>
+    <span class="nf">|</span> <span class="kt">AgeRequired</span>
+    <span class="nf">...</span>
+    <span class="nf">...</span>
+
+<span class="nv">toGoat</span><span class="mi">2</span> <span class="nf">:</span> <span class="kt">RegisterForm</span> <span class="nf">-&gt;</span> <span class="kt">Result</span> <span class="p">(</span><span class="kt">List</span> <span class="kt">Error</span><span class="p">)</span> <span class="kt">Goat</span></code></pre></div>
+<p>If user inputs are invalid, it returns <code>Err</code> like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kt">Err</span> <span class="p">[</span> <span class="kt">NameRequired</span><span class="p">,</span> <span class="kt">AgeInvalidInt</span> <span class="p">]</span></code></pre></div>
+<p>And it only returns converted value with <code>Ok</code> keyword:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kt">Ok</span> <span class="p">(</span><span class="kt">Goat</span> <span class="s">&#34;Sakura-chan&#34;</span> <span class="mi">2</span> <span class="nf">......</span><span class="p">)</span></code></pre></div>
+<p>It&rsquo;s obvious that it is also doing form validation. I confidently say that form decoding is the new-generation of form validation for statically typed programming!</p>
+
+<h2 id="do-not-use-with-independent-form-validation-library">DO NOT use with independent form validation library</h2>
+
+<p>Some people would want to do form validation and form decoding separately by the reason such as they have familiar form validation libraries. But I recommend them not to do so.</p>
+
+<p><strong>Reason 1. It just forces us to duplication of effort.</strong></p>
+
+<p>Using independent form validation library means you have to declare similar code on form validation and form decoding on another place.</p>
+
+<p><strong>Reason 2. It causes unexpected behaviours.</strong></p>
+
+<p>Sometime it could cause following situation.</p>
+
+<ul>
+<li>A user input is valid for form validation</li>
+<li>But form decoding fails for the input</li>
+</ul>
+
+<p>For example, how you can manage following code?</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
+    <span class="p">{</span> <span class="nv">registerForm</span> <span class="nf">:</span> <span class="kt">RegisterForm</span>
+    <span class="p">,</span> <span class="nv">goats</span> <span class="nf">:</span> <span class="kt">List</span> <span class="kt">Goat</span>
+    <span class="p">}</span>
+
+
+<span class="cm">{-| Function for form validation
+</span><span class="cm">-}</span>
+<span class="nv">errors</span> <span class="nf">:</span> <span class="kt">RegisterForm</span> <span class="nf">-&gt;</span> <span class="kt">List</span> <span class="kt">Error</span>
+<span class="nv">errors</span> <span class="nf">=</span> <span class="nf">...</span>
+
+
+<span class="cm">{-| Function for form decoding
+</span><span class="cm">-}</span>
+<span class="nv">toGoat</span> <span class="nf">:</span> <span class="kt">RegisterForm</span> <span class="nf">-&gt;</span> <span class="kt">Maybe</span> <span class="kt">Goat</span>
+<span class="nv">toGoat</span> <span class="nf">=</span> <span class="nf">...</span>
+
+
+<span class="cm">{-| Update Model when user clicked &#34;Register&#34; button.
+</span><span class="cm">
+</span><span class="cm">It SHOULD NOT be called with invalid value because this function is called only after checking by validation library.
+</span><span class="cm">-}</span>
+<span class="nv">onSubmit</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Model</span>
+<span class="nv">onSubmit</span> <span class="nv">model</span> <span class="nf">=</span>
+    <span class="kr">if</span> <span class="kt">List</span><span class="nf">.</span><span class="nv">isEmpty</span> <span class="p">(</span><span class="nv">errors</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">registerForm</span><span class="p">)</span> <span class="kr">then</span>
+        <span class="kr">let</span>
+            <span class="nv">goat</span> <span class="nf">:</span> <span class="kt">Maybe</span> <span class="kt">Goat</span>
+            <span class="nv">goat</span> <span class="nf">=</span> <span class="nv">toGoat</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">registerForm</span>
+        <span class="kr">in</span>
+        <span class="c1">-- Oops! How can I manage if unexpectedly form decoding fails????</span>
+        <span class="nf">...</span>
+        <span class="nf">...</span></code></pre></div>
+<p>As a result, not form validation but form decoding libraries must be essential for statically typed programming.</p>
+
+<h2 id="elm-form-decoder">elm-form-decoder</h2>
+
+<p>Here I&rsquo;ll introduce my Elm library for form decoding named <a href="https://package.elm-lang.org/packages/arowM/elm-form-decoder/latest/">elm-form-decoder</a> to show practical implementations. One of the important requirements for such libraries is that it can build big decode function with partial decode functions. Let&rsquo;s see real examples.</p>
+
+<p>In practical forms, it is common to show errors on each input field. The <a href="https://arowm.github.io/elm-form-decoder/#goat-registerForm">example introduced first</a> also adopts such UI. If you input &ldquo;foo&rdquo; on &ldquo;Age&rdquo; field, it shows &ldquo;Invalid input. Please input integer.&rdquo; just bellow the input box.</p>
+
+<p>To realise such UI, it is natural to declare decode functions for each input field. Just look over the code bellow. Need not to understand completely.</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kn">import </span><span class="nc">Form.Decoder</span> <span class="kr">as</span> <span class="kt">Decoder</span>
+
+<span class="cm">{-| Decoder for name field.
+</span><span class="cm">
+</span><span class="cm">    import Form.Decoder as Decoder
+</span><span class="cm">
+</span><span class="cm">    Decoder.run name &#34;&#34;
+</span><span class="cm">    --&gt; Err [ NameRequired ]
+</span><span class="cm">
+</span><span class="cm">    Decoder.run name &#34;foo&#34;
+</span><span class="cm">    --&gt; Ok &#34;foo&#34;
+</span><span class="cm">-}</span>
+<span class="nv">name</span> <span class="nf">:</span> <span class="kt">Decoder</span> <span class="kt">String</span> <span class="kt">Error</span> <span class="kt">String</span>
+<span class="nv">name</span> <span class="nf">=</span>
+    <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">identity</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">assert</span> <span class="p">(</span><span class="kt">Decoder</span><span class="nf">.</span><span class="nv">minLength</span> <span class="kt">NameRequired</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="cm">{-| Decoder for name field.
+</span><span class="cm">
+</span><span class="cm">    import Form.Decoder as Decoder
+</span><span class="cm">
+</span><span class="cm">    Decoder.run age &#34;&#34;
+</span><span class="cm">    --&gt; Err [ AgeRequired ]
+</span><span class="cm">
+</span><span class="cm">    Decoder.run age &#34;foo&#34;
+</span><span class="cm">    --&gt; Err [ AgeInvalidInt ]
+</span><span class="cm">
+</span><span class="cm">    Decoder.run age &#34;-30&#34;
+</span><span class="cm">    --&gt; Err [ AgeNegative ]
+</span><span class="cm">
+</span><span class="cm">    Decoder.run age &#34;30&#34;
+</span><span class="cm">    --&gt; Ok 30
+</span><span class="cm">
+</span><span class="cm">-}</span>
+<span class="nv">age</span> <span class="nf">:</span> <span class="kt">Decoder</span> <span class="kt">String</span> <span class="kt">Error</span> <span class="kt">Int</span>
+<span class="nv">age</span> <span class="nf">=</span>
+    <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">identity</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">assert</span> <span class="p">(</span><span class="kt">Decoder</span><span class="nf">.</span><span class="nv">minLength</span> <span class="kt">AgeRequired</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">andThen</span> <span class="p">(</span><span class="nf">\</span><span class="nv">_</span> <span class="nf">-&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">int</span> <span class="kt">AgeInvalidInt</span><span class="p">)</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">assert</span> <span class="p">(</span><span class="kt">Decoder</span><span class="nf">.</span><span class="nv">minBound</span> <span class="kt">AgeNegative</span> <span class="mi">0</span><span class="p">)</span></code></pre></div>
+<p>Notice that the type of <code>name</code> and <code>age</code> are NOT like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="nv">name</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Result</span> <span class="kt">Error</span> <span class="kt">String</span>
+<span class="nv">age</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Result</span> <span class="kt">Error</span> <span class="kt">Int</span></code></pre></div>
+<p>Instead, they have following types:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="nv">name</span> <span class="nf">:</span> <span class="kt">Decoder</span> <span class="kt">String</span> <span class="kt">Error</span> <span class="kt">String</span>
+<span class="nv">age</span> <span class="nf">:</span> <span class="kt">Decoder</span> <span class="kt">String</span> <span class="kt">Error</span> <span class="kt">Int</span></code></pre></div>
+<p>It means they are <strong>NOT functions to decode user inputs itself, but just a sort of guidebooks</strong>. A guidebook with type of <code>Decoder input err a</code> decodes <code>input</code> type into <code>a</code> type, with raising error of type <code>err</code>.</p>
+
+<p>To decode inputs by following instructions written in such <strong>guidebooks</strong>, use <code>run</code> function exposed by elm-form-decoder.</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="nv">run</span> <span class="nf">:</span> <span class="kt">Decoder</span> <span class="nv">input</span> <span class="nv">err</span> <span class="nv">a</span> <span class="nf">-&gt;</span> <span class="nv">input</span> <span class="nf">-&gt;</span> <span class="kt">Result</span> <span class="p">(</span><span class="kt">List</span> <span class="nv">err</span><span class="p">)</span> <span class="nv">a</span></code></pre></div>
+<p>It takes decoder and actual inputs like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kt">Decoder</span><span class="nf">.</span><span class="nv">run</span> <span class="nv">age</span> <span class="s">&#34;&#34;</span>
+<span class="c1">--&gt; Err [ AgeRequired ]</span>
+
+<span class="kt">Decoder</span><span class="nf">.</span><span class="nv">run</span> <span class="nv">age</span> <span class="s">&#34;30&#34;</span>
+<span class="c1">--&gt; Ok 30</span></code></pre></div>
+<p>Why it uses guidebook (decoder) rather than function to decode input itself? It is because decoders can be composed to build big decoder. At first, let&rsquo;s create a new decoder by converting existing decoders:</p>
+
+<pre><code>name_ : Decoder RegisterForm Error String
+name_ = Decoder.lift .name name
+
+age_ : Decoder RegisterForm Error Int
+age_ = Decoder.lift .age age
+</code></pre>
+
+<p>The <code>lift</code> function takes getter function and original decoder to make new decoder that consumes <code>RegisterForm</code> instead of <code>String</code>.</p>
+
+<p>We can now create a decoder that converts <code>RegisterForm</code> into <code>Goat</code> just composing them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="nv">form</span> <span class="nf">:</span> <span class="kt">Decoder</span> <span class="kt">RegisterForm</span> <span class="kt">Error</span> <span class="kt">Goat</span>
+<span class="nv">form</span> <span class="nf">=</span>
+    <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">top</span> <span class="kt">Goat</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">field</span> <span class="nv">name_</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">field</span> <span class="nv">age_</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">field</span> <span class="nv">horns_</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">field</span> <span class="nv">contact_</span>
+        <span class="nf">|&gt;</span> <span class="kt">Decoder</span><span class="nf">.</span><span class="nv">field</span> <span class="nv">memo_</span></code></pre></div>
+<p>Wow, It&rsquo;s all! There are no difficulties. It just aligns field decoders. This is the great power of decoder pattern.</p>
+
+<p>Finally, let&rsquo;s use this form decoder to check it can decode <code>RegisterForm</code> into <code>Goat</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kt">Decoder</span><span class="nf">.</span><span class="nv">run</span> <span class="nv">form</span> <span class="p">(</span><span class="kt">Form</span> <span class="s">&#34;Sakura-chan&#34;</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;0&#34;</span> <span class="nf">...</span><span class="p">)</span>
+<span class="c1">--&gt; Ok (Goat &#34;Sakura-chan&#34; 2 0 ...)</span></code></pre></div>
+<h2 id="real-world-examples">Real world examples</h2>
+
+<p>The actual code in production is a bit more complex than example of this post. You can check <a href="https://github.com/arowM/elm-form-decoder/tree/master/sample">real world example</a> on the <a href="https://github.com/arowM/elm-form-decoder/">repository for elm-form-decoder</a>. Please give your star if you interested in it 😉</p>
+
+<p><img src="/img/form-decoder-last.jpg" alt="eye catch" />
+<a href="https://twitter.com/hashtag/%E3%81%95%E3%81%8F%E3%82%89%E3%81%A1%E3%82%83%E3%82%93%E6%97%A5%E8%A8%98?src=hash">See more Sakura-chan</a></p>
+<ul class="pa0">
+  
+   <li class="list">
+     <a href="/posts/tags/form-decoding" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Form decoding</a>
+   </li>
+  
+   <li class="list">
+     <a href="/posts/tags/form-validation" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Form validation</a>
+   </li>
+  
+   <li class="list">
+     <a href="/posts/tags/elm" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Elm</a>
+   </li>
+  
+</ul>
+<div class="mt6">
+        
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://arow.info/posts" >
+    &copy; 2019 ARoW blog
+  </a>
+    <div>
+
+
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/posts/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

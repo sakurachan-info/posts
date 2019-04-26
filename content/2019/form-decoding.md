@@ -5,7 +5,7 @@ featured_image: "/img/form-decoding-head.jpg"
 tags: ["Form decoding", "Form validation", "Elm"]
 author: "arowM"
 author_href: "https://github.com/arowM/"
-draft: true
+draft: false
 ---
 
 Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
