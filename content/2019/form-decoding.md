@@ -24,7 +24,7 @@ In this example app, we assume that it only contains two screens:
 
 Here I've prepared [a demo app](https://arowm.github.io/elm-form-decoder/). Please play with it to get practical visualization.
 
-![demo screenshot](/img/form-decoder-screenshot.png)
+![demo screenshot](/posts/img/form-decoder-screenshot.png)
 
 ## Type for managing data itself, and type for managing state of form
 
@@ -86,7 +86,7 @@ have to input email address again!
 
 Therefore, we need another type to represent form state.
 
-![eye catch](/img/form-decoder-middle.jpg)
+![eye catch](/posts/img/form-decoder-middle.jpg)
 
 ## Type for hold form state
 
@@ -357,5 +357,5 @@ Decoder.run form (Form "Sakura-chan" "2" "0" ...)
 
 The actual code in production is a bit more complex than example of this post. You can check [real world example](https://github.com/arowM/elm-form-decoder/tree/master/sample) on the [repository for elm-form-decoder](https://github.com/arowM/elm-form-decoder/). Please give your star if you interested in it 😉
 
-![eye catch](/img/form-decoder-last.jpg)
+![eye catch](/posts/img/form-decoder-last.jpg)
 [See more Sakura-chan](https://twitter.com/hashtag/%E3%81%95%E3%81%8F%E3%82%89%E3%81%A1%E3%82%83%E3%82%93%E6%97%A5%E8%A8%98?src=hash)
