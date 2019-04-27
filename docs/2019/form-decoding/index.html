@@ -34,7 +34,7 @@
 
     <meta property="og:title" content="Form Decoding: the next era of the Form Validation" />
 <meta property="og:description" content="Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
-In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications." />
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. In this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://arow.info/posts/2019/form-decoding/" />
 
@@ -58,12 +58,12 @@ In these days, some application developers like to use statically typed programm
 
 <meta itemprop="name" content="Form Decoding: the next era of the Form Validation">
 <meta itemprop="description" content="Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
-In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications.">
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. In this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications.">
 
 
 <meta itemprop="datePublished" content="2019-04-26T16:06:39&#43;09:00" />
 <meta itemprop="dateModified" content="2019-04-26T16:06:39&#43;09:00" />
-<meta itemprop="wordCount" content="1737">
+<meta itemprop="wordCount" content="1736">
 
   <meta itemprop="image" content="https://arow.info/posts/img/form-decoding-twitter.jpg">
 
@@ -75,7 +75,7 @@ In these days, some application developers like to use statically typed programm
 
 <meta name="twitter:title" content="Form Decoding: the next era of the Form Validation"/>
 <meta name="twitter:description" content="Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
-In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications."/>
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. In this post I introduce new concept named form decoding, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using elm-form-decoder, which I&rsquo;ve developed to do form decoding in Elm applications."/>
 
       
 <script>
@@ -163,7 +163,7 @@ ga('send', 'pageview');
 
 <p>Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.</p>
 
-<p>In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named <strong>form decoding</strong>, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using <a href="https://github.com/arowM/elm-form-decoder">elm-form-decoder</a>, which I&rsquo;ve developed to do form decoding in Elm applications.</p>
+<p>In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. In this post I introduce new concept named <strong>form decoding</strong>, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using <a href="https://github.com/arowM/elm-form-decoder">elm-form-decoder</a>, which I&rsquo;ve developed to do form decoding in Elm applications.</p>
 
 <h2 id="sample-application">Sample application</h2>
 
@@ -240,7 +240,7 @@ have to input email address again!</p>
 
 <p><img src="/posts/img/form-decoder-middle.jpg" alt="eye catch" /></p>
 
-<h2 id="type-for-hold-form-state">Type for hold form state</h2>
+<h2 id="type-for-holding-form-state">Type for holding form state</h2>
 
 <p>Okay, let&rsquo;s declare another type to hold state of registration form here:</p>
 <div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">RegisterForm</span> <span class="nf">=</span>
@@ -268,7 +268,7 @@ have to input email address again!</p>
 
 <h2 id="form-decoding-is-the-next-generation-of-form-validation">Form decoding is the next-generation of form validation</h2>
 
-<p>Bunch of people would think &ldquo;Hey, form decoding is different from form validation, though I&rsquo;ve understood its importance&rdquo;. Yes, you are right. But if considering the posibility of failing decoding, it practically a sort of form validation.</p>
+<p>Bunch of people would think &ldquo;Hey, form decoding is different from form validation, though I&rsquo;ve understood its importance&rdquo;. Yes, you are right. But if considering the possibility of failing decoding, it practically a sort of form validation.</p>
 
 <p>Say that we have following value in Model as <code>RegisterForm</code>.</p>
 <div class="highlight"><pre class="chroma"><code class="language-elm" data-lang="elm"><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">RegisterForm</span> <span class="nf">=</span>

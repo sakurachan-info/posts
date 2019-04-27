@@ -11,7 +11,7 @@ draft: false
 
 Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
 
-In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. So, in this post I introduce new concept named **form decoding**, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using [elm-form-decoder](https://github.com/arowM/elm-form-decoder), which I've developed to do form decoding in Elm applications.
+In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. In this post I introduce new concept named **form decoding**, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using [elm-form-decoder](https://github.com/arowM/elm-form-decoder), which I've developed to do form decoding in Elm applications.
 
 ## Sample application
 
@@ -88,7 +88,7 @@ Therefore, we need another type to represent form state.
 
 ![eye catch](/posts/img/form-decoder-middle.jpg)
 
-## Type for hold form state
+## Type for holding form state
 
 Okay, let's declare another type to hold state of registration form here:
 
@@ -124,7 +124,7 @@ In this post, this sort of conversion is called **form decoding**, assuming that
 
 ## Form decoding is the next-generation of form validation
 
-Bunch of people would think "Hey, form decoding is different from form validation, though I've understood its importance". Yes, you are right. But if considering the posibility of failing decoding, it practically a sort of form validation.
+Bunch of people would think "Hey, form decoding is different from form validation, though I've understood its importance". Yes, you are right. But if considering the possibility of failing decoding, it practically a sort of form validation.
 
 Say that we have following value in Model as `RegisterForm`.
 
