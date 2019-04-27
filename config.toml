@@ -7,4 +7,4 @@ pygmentsUseClasses = true
 pygmentsCodefences = true
 
 [params]
-custom_css = ["css/syntax.css", "css/custom.css"]
+custom_css = ["/css/syntax.css", "/css/custom.css"]
