@@ -23,6 +23,7 @@ In this example app, we assume that it only contains two screens:
 * A page for viewing all the goats registered
 
 Here I've prepared [a demo app](https://arowm.github.io/elm-form-decoder/). Please play with it to get practical visualization.
+For example, input "foo" on age field and blur to show error messages. (It does not show "required" error message till pressing register button for EFO).
 
 ![demo screenshot](/posts/img/form-decoder-screenshot.png)
 
