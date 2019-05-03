@@ -177,7 +177,7 @@ Therefore, you should never use form validation when using form decoding.
 
 Here I'll introduce my library for form decoding in Elm: [elm-form-decoder](https://package.elm-lang.org/packages/arowM/elm-form-decoder/latest/). When building a form decoding library it's important to consider composition. Users need to be able to build complex decoding functions out of small, simple parts.
 
-Good form designs typically show the user the errors right next to the field where the error exists. You might have noticed that that is exactly how the demo app works. Here are what the form decoders for that type of app look like:
+Good form designs typically show the user the errors right next to the field where the error exists. You might have noticed that that is exactly how the demo app works. Here is what the form decoders for that kind of app would look like:
 
 ```elm
 import Form.Decoder as Decoder
