@@ -18,7 +18,7 @@ Say we have a social networking application for goats. For our purposes it doesn
 1. A form to register a new goat
 2. A page for viewing all registered goats
 
-Take a look at the [finished application](https://arowm.github.io/elm-form-decoder/). Play around a bit to get an idea of how it handles error messages. Errors appear next to inputs, and the "required" error doesn't appear until the form is submitted.
+Take a look at the [finished application](https://arowm.github.io/elm-form-decoder/). Play around a bit to get an idea of how it handles error messages. Errors appear next to inputs, and the "required" error doesn't appear until the form is submitted. Neither of these constraints are inherent to form decoding, but are design decisions made during development of the application. You could just as easily have all the errors appear at the top of the form when the user clicks submit, or something else entirely.
 
 ![demo screenshot](/posts/img/form-decoder-screenshot.png)
 
@@ -80,7 +80,9 @@ type ContactType
     | UsePhone
 ```
 
-The enumerated type doesn't quite capture the semantics of how HTML deals with select tags. The `value` of a select tag is just a string, with rather weak guarantees about its possible values. Its better to store whatever HTML gives us and deal with it at the validation layer.
+The enumerated type doesn't quite capture the semantics of how HTML deals with select tags. The `value` of a select tag is just a string, with rather weak guarantees about its possible values. It's better to store whatever HTML gives us and deal with it at the validation layer.
+
+![eye catch](/posts/img/form-decoder-middle.jpg)
 
 ## Form Decoding
 
@@ -289,9 +291,13 @@ Decoder.run form (Form "Sakura-chan" "2" "0" ...)
 --> Ok (Goat "Sakura-chan" 2 0 ...)
 ```
 
+With this it should be clear that form-decoding is a special case of form validation. I feel confident in saying that form decoding is the next generation of form validation for statically typed programming!
+
 ## Real World Examples
 
 The actual code running in production is a bit more complex than the example shown in this post. Goats have complex needs after all! You can check out the [real world example](https://github.com/arowM/elm-form-decoder/tree/master/sample) in the [elm-form-decoder repository](https://github.com/arowM/elm-form-decoder/). Please give a star if you're interested in it. 😉
+
+Special thanks to [@jayshua](https://github.com/jayshua/) who edited this post!
 
 ![eye catch](/posts/img/form-decoder-last.jpg)
 [See more Sakura-chan](https://twitter.com/hashtag/%E3%81%95%E3%81%8F%E3%82%89%E3%81%A1%E3%82%83%E3%82%93%E6%97%A5%E8%A8%98?src=hash)
