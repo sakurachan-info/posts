@@ -9,38 +9,22 @@ images: ["/posts/img/form-decoding-twitter.jpg"]
 draft: false
 ---
 
-Form validation, verifying the user inputs, is common in GUI applications. But when it comes to be the context of statically typed programming, the form validation is not enough.
+Form validation, specifically verifying user input, is a common requirement in GUI applications. With statically typed languages it can get a bit complicated. In this post I'll introduce **form decoding**, a form validation method specifically suited to statically typed languages. I'll also introduce [elm-form-decoder](https://github.com/arowM/elm-form-decoder), an implementation of the concept in Elm.
 
-In these days, some application developers like to use statically typed programming languages in order to make their application more reliable. In this post I introduce new concept named **form decoding**, a sort of form validation especially suitable for statically typed programming, and demonstrate how it could be make your applications better by using [elm-form-decoder](https://github.com/arowM/elm-form-decoder), which I've developed to do form decoding in Elm applications.
+## Sample Application
 
-## Sample application
+Say we have a social networking application for goats. For our purposes it doesn't matter how they use keyboards with their two-fingered hands. We'll assume that the application contains two screens:
 
-Say that we have an SNS application for goats. Here, do not matter how they can use keyboards by their two-fingered hands.
+1. A form to register a new goat
+2. A page for viewing all registered goats
 
-In this example app, we assume that it only contains two screens:
-
-* A form to register a new goat
-* A page for viewing all the goats registered
-
-Here I've prepared [a demo app](https://arowm.github.io/elm-form-decoder/). Please play with it to get practical visualization.
-For example, input "foo" on age field and blur to show error messages. (It does not show "required" error message till pressing register button for EFO).
+Take a look at the [finished application](https://arowm.github.io/elm-form-decoder/). Play around a bit to get an idea of how it handles error messages. Errors appear next to inputs, and the "required" error doesn't appear until the form is submitted. Neither of these constraints are inherent to form decoding, but are design decisions made during development of the application. You could just as easily have all the errors appear at the top of the form when the user clicks submit, or something else entirely.
 
 ![demo screenshot](/posts/img/form-decoder-screenshot.png)
 
-## Type for managing data itself, and type for managing state of form
+## Types for Data
 
-In this sample app, we have following data structure as a goat profile.
-
-* Name
-* Age
-* Number of Horns
-* Means of Contact
-    * Either of Email or Phone Number
-* Message to other goats
-    * It's optional
-
-You would declare a type for managing this data like this:
-(In this post, all sample codes are written in Elm.)
+The core idea of Form Decoding is proper separation of concerns. The type for a Goat might look like this:
 
 ```elm
 type alias Goat =
@@ -50,48 +34,31 @@ type alias Goat =
     , contact : Contact
     , message : Maybe Message
     }
-```
 
-Types `Name`, `Age`, `Horns`, and `Message` here is declared in another place:
+type Contact
+    = ContactEmail Email
+    | ContactPhone Phone
 
-```elm
 type Name
     = Name String
 
 type Age
     = Age Int
 
-...
+...additional wrapping types...
 ```
 
-It's just an opaque type to assure that the value is valid as name, age, e.t.c.
+But this type is **not** a good type for storing the current state of the form. The user might not have entered a valid age for example. The type that stores the form's state needs to be such that the age can be stored even if it is invalid. That way an error can be displayed if necessary:
 
-The `Contact` type can take two type of values email or phone:
+> The input value "two" is invalid for this field. It needs to be made of digits!
 
-```elm
-type Contact
-    = ContactEmail Email
-    | ContactPhone Phone
-```
+Consider the contact field as another example. Say the goat first selects "Email address" as their contact method and types "you-goat-mail@example.com" in the email field, but then changed their mind and selects "Phone number" instead. The value of the `contact` field will become `ContactPhone ""` and the previously entered email address will be gone forever. It would be preferable if the goat could select email once again and have their previous entry remain.
 
-The reason `message` has type of `Maybe Message` is that it is optional value. It can take Nothing (empty input), or something like `Just "Hi! I'm Sakura-chan."`. Nice modeling!
+Conclusion: We need another type to represent the state of the form.
 
-So do we use `Goat` type to hold the state of registration form? No! The `Goat` type is not suitable for user inputs that is plain text itself. For example, the user would input "two" in the input field for age, but `age` field of the `Goat` is actually the type of `Int`. It means if we want to show the error text bellow, we have to take the `value` property of the `input` tag directly.
+## Types for Forms
 
-> The input value "two" is invalid for this field.
-
-It's assumed a sort of bad pattern, especially Elm does not allow developers to do such methods to avoid mess codes.
-
-The another example that `Goat` type cannot handle form state is about the method of contact. Say that the goat first selected "Email address" as their contact method and input "you-goat-a-mail@example.com" in email field, but they changed their mind to select "Phone number". In this situation, the value of the `contact` field can be `ContactPhone ""`, but the input value "you-goat-a-mail@example.com" is no more here. It means if the goat selected "Email address" again, they
-have to input email address again!
-
-Therefore, we need another type to represent form state.
-
-![eye catch](/posts/img/form-decoder-middle.jpg)
-
-## Type for holding form state
-
-Okay, let's declare another type to hold state of registration form here:
+Here's a type that can store the form's state:
 
 ```elm
 type alias RegisterForm =
@@ -105,9 +72,7 @@ type alias RegisterForm =
     }
 ```
 
-It's simple honesty. No interest things. It just holds user inputs as it is in `String` fields.
-
-Maybe you think that `contactType` could be enumeration type:
+It's pretty simple, not much to see.  You might be surprised that `contactType` is a string rather than an enumerated type such as:
 
 ```elm
 type ContactType
@@ -115,19 +80,15 @@ type ContactType
     | UsePhone
 ```
 
-But it cannot handle state of `select` tag of HTML exactly. The `value` property of `select` tag is just a string, so the `ContactType` cannot handle the possibility that the select tag has unexpected `value`.
+The enumerated type doesn't quite capture the semantics of how HTML deals with select tags. The `value` of a select tag is just a string, with rather weak guarantees about its possible values. It's better to store whatever HTML gives us and deal with it at the validation layer.
 
-## Why Form decoding is needed?
+![eye catch](/posts/img/form-decoder-middle.jpg)
 
-You may noticed that we need some function to convert `RegisterForm` into `Goat` because we cannot benefit from static types if using `RegisterForm` as it is even after registering. It would be much better to use dynamic typing if doing so!
+## Form Decoding
 
-In this post, this sort of conversion is called **form decoding**, assuming that user inputs are __encoded__ as string.
+You might have noticed that we'll need a function to convert a RegisterForm into a Goat. (After all, if we just used RegisterForm as our model going forward we might as well switch to a dynamically typed language.) This is where **form decoding** comes in. We'll write a function to __decode__ the user's input, which is comes into the system __encoded__ as strings.
 
-## Form decoding is the next-generation of form validation
-
-Bunch of people would think "Hey, form decoding is different from form validation, though I've understood its importance". Yes, you are right. But if considering the possibility of failing decoding, it practically a sort of form validation.
-
-Say that we have following value in Model as `RegisterForm`.
+Here's a possible value of the RegisterForm type:
 
 ```elm
 type alias RegisterForm =
@@ -141,20 +102,13 @@ type alias RegisterForm =
     }
 ```
 
-This obviously cannot be successfully converted to `Goat` type. One of the reason to fail is that it does not have digits in age field. Remember that `Age` type is actually equivalent to `Int`.
-
-```elm
-type Age
-    = Age Int
-```
-
-Consequently, the convert function is supposed to have type like:
+This obviously cannot be successfully converted into a `Goat` type. For one thing it doesn't have digits in the age field. (Remember, the `Age` type is equivalent to an `Int`.) Since the conversion may not be successful we'll want a type signature that looks something like this:
 
 ```elm
 toGoat : RegisterForm -> Maybe Goat
 ```
 
-It returns `Nothing` if it fails to convert. Or it can be more user friendly to tell why it failed.
+Instead of returning `Nothing` upon failure, it might be better to return a detailed error explaining __why__ it failed.
 
 ```elm
 type Error
@@ -163,41 +117,27 @@ type Error
     | AgeNegative
     | AgeRequired
     ...
-    ...
 
 toGoat2 : RegisterForm -> Result (List Error) Goat
 ```
 
-If user inputs are invalid, it returns `Err` like:
+For which a possible return value could be:
 
 ```elm
 Err [ NameRequired, AgeInvalidInt ]
 ```
 
-And it only returns converted value with `Ok` keyword:
+## DO NOT use an independent form validation library
 
-```elm
-Ok (Goat "Sakura-chan" 2 ......)
-```
+Some might want to validate and decode their form separately. Here there be dragons, and dragons eat goats.
 
-It's obvious that it is also doing form validation. I confidently say that form decoding is the new-generation of form validation for statically typed programming!
+**Reason 1. Duplicate effort.**
 
-## DO NOT use with independent form validation library
+Since form decoding performs a pretty thorough inspection of the values, it requires implementing much the same code that form validation would require. Don't repeat yourself.
 
-Some people would want to do form validation and form decoding separately by the reason such as they have familiar form validation libraries. But I recommend them not to do so.
+**Reason 2. It causes unexpected behavior.**
 
-**Reason 1. It just forces us to duplication of effort.**
-
-Using independent form validation library means you have to declare similar code on form validation and form decoding on another place.
-
-**Reason 2. It causes unexpected behaviours.**
-
-Sometime it could cause following situation.
-
-* A user input is valid for form validation
-* But form decoding fails for the input
-
-For example, how you can manage following code?
+Imagine the validation and decoding fall out-of-sync with each other. Then the validation could succeed and tell the user all is good, but the decoding fails and the program grinds to a halt. For example:
 
 ```elm
 type alias Model =
@@ -218,9 +158,9 @@ toGoat : RegisterForm -> Maybe Goat
 toGoat = ...
 
 
-{-| Update Model when user clicked "Register" button.
+{-| Update the Model when the user clicks the "Register" button.
 
-It SHOULD NOT be called with invalid value because this function is called only after checking by validation library.
+This SHOULD NOT be called with an invalid value because it is only called after the validation library gives its approval.
 -}
 onSubmit : Model -> Model
 onSubmit model =
@@ -229,20 +169,17 @@ onSubmit model =
             goat : Maybe Goat
             goat = toGoat model.registerForm
         in
-        -- Oops! How can I manage if unexpectedly form decoding fails????
+        -- Oops! What should I do if form decoding fails? The form validated successfully!
         ...
         ...
 ```
-
-As a result, not form validation but form decoding libraries must be essential for statically typed programming.
+Therefore, you should never use form validation when using form decoding.
 
 ## elm-form-decoder
 
-Here I'll introduce my Elm library for form decoding named [elm-form-decoder](https://package.elm-lang.org/packages/arowM/elm-form-decoder/latest/) to show practical implementations. One of the important requirements for such libraries is that it can build big decode function with partial decode functions. Let's see real examples.
+Here I'll introduce my library for form decoding in Elm: [elm-form-decoder](https://package.elm-lang.org/packages/arowM/elm-form-decoder/latest/). When building a form decoding library it's important to consider composition. Users need to be able to build complex decoding functions out of small, simple parts.
 
-In practical forms, it is common to show errors on each input field. The [example introduced first](https://arowm.github.io/elm-form-decoder/#goat-registerForm) also adopts such UI. If you input "foo" on "Age" field, it shows "Invalid input. Please input integer." just bellow the input box.
-
-To realise such UI, it is natural to declare decode functions for each input field. Just look over the code bellow. Need not to understand completely.
+Good form designs typically show the user the errors right next to the field where the error exists. You might have noticed that that is exactly how the demo app works. Here is what the form decoders for that kind of app would look like:
 
 ```elm
 import Form.Decoder as Decoder
@@ -288,29 +225,29 @@ age =
         |> Decoder.assert (Decoder.minBound AgeNegative 0)
 ```
 
-Notice that the type of `name` and `age` are NOT like:
+Notice that the type of `name` and `age` do not look like:
 
 ```elm
 name : String -> Result Error String
 age : String -> Result Error Int
 ```
 
-Instead, they have following types:
+But instead look like:
 
 ```elm
 name : Decoder String Error String
 age : Decoder String Error Int
 ```
 
-It means they are **NOT functions to decode user inputs itself, but just a sort of guidebooks**. A guidebook with type of `Decoder input err a` decodes `input` type into `a` type, with raising error of type `err`.
+This should indicate to the reader that they do not decode user input themselves, but are sort of like a guidebook. A guidebook of type `Decoder input error a` decodes `input` into some type `a` while raising errors of type `error`.
 
-To decode inputs by following instructions written in such __guidebooks__, use `run` function exposed by elm-form-decoder.
+Decoding an input using the guidebook requires using the `run` function exposed by elm-form-decoder.
 
 ```elm
 run : Decoder input err a -> input -> Result (List err) a
 ```
 
-It takes decoder and actual inputs like:
+`run` takes a decoder and an input and returns a result:
 
 ```elm
 Decoder.run age ""
@@ -320,7 +257,7 @@ Decoder.run age "30"
 --> Ok 30
 ```
 
-Why it uses guidebook (decoder) rather than function to decode input itself? It is because decoders can be composed to build big decoder. At first, let's create a new decoder by converting existing decoders:
+You might be wondering: Why use a guidebook (decoder) rather than a regular old function to decode the input? Because decoders can be composed to build bigger decoders. For example:
 
 ```
 name_ : Decoder RegisterForm Error String
@@ -330,9 +267,9 @@ age_ : Decoder RegisterForm Error Int
 age_ = Decoder.lift .age age
 ```
 
-The `lift` function takes getter function and original decoder to make new decoder that consumes `RegisterForm` instead of `String`.
+The `lift` function "lifts" a decoder up to operate on a larger structure. Here it converts the `name` decoder, which consumes a `String` to consume a `{x | name : String}`.
 
-We can now create a decoder that converts `RegisterForm` into `Goat` just composing them:
+Let's use this to build a complete decoder for converting a `RegisterForm` into a `Goat`:
 
 ```elm
 form : Decoder RegisterForm Error Goat
@@ -345,18 +282,22 @@ form =
         |> Decoder.field memo_
 ```
 
-Wow, It's all! There are no difficulties. It just aligns field decoders. This is the great power of decoder pattern.
+Just like that we've built a complete decoder out of smaller, simple decoders. That's the power of using decoders.
 
-Finally, let's use this form decoder to check it can decode `RegisterForm` into `Goat`:
+Let's finish up by using the decoder to convert a `RegisterForm` into a `Goat`:
 
 ```elm
 Decoder.run form (Form "Sakura-chan" "2" "0" ...)
 --> Ok (Goat "Sakura-chan" 2 0 ...)
 ```
 
-## Real world examples
+With this it should be clear that form-decoding is a special case of form validation. I feel confident in saying that form decoding is the next generation of form validation for statically typed programming!
 
-The actual code in production is a bit more complex than example of this post. You can check [real world example](https://github.com/arowM/elm-form-decoder/tree/master/sample) on the [repository for elm-form-decoder](https://github.com/arowM/elm-form-decoder/). Please give your star if you interested in it 😉
+## Real World Examples
+
+The actual code running in production is a bit more complex than the example shown in this post. Goats have complex needs after all! You can check out the [real world example](https://github.com/arowM/elm-form-decoder/tree/master/sample) in the [elm-form-decoder repository](https://github.com/arowM/elm-form-decoder/). Please give a star if you're interested in it. 😉
+
+Special thanks to [@jayshua](https://github.com/jayshua/) who edited this post!
 
 ![eye catch](/posts/img/form-decoder-last.jpg)
 [See more Sakura-chan](https://twitter.com/hashtag/%E3%81%95%E3%81%8F%E3%82%89%E3%81%A1%E3%82%83%E3%82%93%E6%97%A5%E8%A8%98?src=hash)
