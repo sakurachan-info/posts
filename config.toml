@@ -1,8 +1,8 @@
-baseURL = "https://arow.info/posts"
+baseURL = "https://sakurachan.info/posts"
 languageCode = "en-us"
-title = "ARoW blog"
-theme = "ananke"
-googleAnalytics = "UA-71777587-1"
+title = "Sakura-chan blog"
+theme = ["github.com/theNewDynamic/gohugo-theme-ananke"]
+# googleAnalytics = ""
 pygmentsUseClasses = true
 pygmentsCodefences = true
 

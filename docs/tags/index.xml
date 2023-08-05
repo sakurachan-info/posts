@@ -1,40 +1,36 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on ARoW blog</title>
-    <link>https://arow.info/posts/tags/</link>
-    <description>Recent content in Tags on ARoW blog</description>
+    <title>Tags on Sakura-chan blog</title>
+    <link>https://sakurachan.info/posts/tags/</link>
+    <description>Recent content in Tags on Sakura-chan blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Apr 2019 16:06:39 +0900</lastBuildDate>
-    
-	<atom:link href="https://arow.info/posts/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 26 Apr 2019 16:06:39 +0900</lastBuildDate><atom:link href="https://sakurachan.info/posts/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Elm</title>
-      <link>https://arow.info/posts/tags/elm/</link>
+      <link>https://sakurachan.info/posts/tags/elm/</link>
       <pubDate>Fri, 26 Apr 2019 16:06:39 +0900</pubDate>
       
-      <guid>https://arow.info/posts/tags/elm/</guid>
+      <guid>https://sakurachan.info/posts/tags/elm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Form decoding</title>
-      <link>https://arow.info/posts/tags/form-decoding/</link>
+      <link>https://sakurachan.info/posts/tags/form-decoding/</link>
       <pubDate>Fri, 26 Apr 2019 16:06:39 +0900</pubDate>
       
-      <guid>https://arow.info/posts/tags/form-decoding/</guid>
+      <guid>https://sakurachan.info/posts/tags/form-decoding/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Form validation</title>
-      <link>https://arow.info/posts/tags/form-validation/</link>
+      <link>https://sakurachan.info/posts/tags/form-validation/</link>
       <pubDate>Fri, 26 Apr 2019 16:06:39 +0900</pubDate>
       
-      <guid>https://arow.info/posts/tags/form-validation/</guid>
+      <guid>https://sakurachan.info/posts/tags/form-validation/</guid>
       <description></description>
     </item>
     
